@@ -181,8 +181,8 @@
                     </Image.Style>
                 </Image>
                 <StackPanel Orientation="Vertical" FlowDirection="LeftToRight" MouseMove="SongProgressSlider_MouseMove" MouseLeftButtonDown="SongProgressSlider_MouseLeftButtonDown" >
-                    <userControls:MarqueeTextBlock Name="ArtistTitleTextBlock" MarqueeStopTimeInBeginning="5" MarqueeTimeInSeconds="10" Text="No artist - no title" Height="20" VerticalAlignment="Center" Width="300" Margin="5,2,5,2"/>
-                    <ProgressBar Height="20" HorizontalAlignment="Left" Name="SongProgressSlider" Style="{DynamicResource SliderProgressStyle}" VerticalAlignment="Center" Width="300" IsEnabled="False" Margin="5,2,5,2"/>
+                    <userControls:MarqueeTextBlock Name="ArtistTitleTextBlock" MarqueeStopTimeInBeginning="5" MarqueeTimeInSeconds="10" Text="No artist - no title" Height="20" VerticalAlignment="Center" Width="500" Margin="5,2,5,2"/>
+                    <ProgressBar Height="20" HorizontalAlignment="Left" Name="SongProgressSlider" Style="{DynamicResource SliderProgressStyle}" VerticalAlignment="Center" Width="500" IsEnabled="False" Margin="5,2,5,2"/>
                 </StackPanel>
                 <ToggleButton Name="SongProgressButton" Height="25" HorizontalAlignment="Left" VerticalAlignment="Center" HorizontalContentAlignment="Left"
                               ToolTip="Toggle Time Display Mode" IsChecked="{Binding ShowRemainingTime}"
@@ -209,7 +209,7 @@
                 <Slider Height="22" HorizontalAlignment="Left" Name="VolumeSlider" VerticalAlignment="Center" Width="150" Margin="5,2,5,2" Value="{Binding Path=Volume}" Maximum="10" Minimum="0"/>
                 <Separator/>
                 <Menu>
-                    <MenuItem Height="40" Width="38" ToolTip="Help">
+                    <MenuItem Height="40" Width="38" ToolTip="Help" Background="Transparent">
                         <MenuItem.Icon>
                             <Image Source="/PlayerControl;component/Resources/HelpButton.png"/>
                         </MenuItem.Icon>
