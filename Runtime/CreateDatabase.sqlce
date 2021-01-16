@@ -1,0 +1,9 @@
+-- Script Date: 18.09.2016 14:01  - ErikEJ.SqlCeScripting version 3.5.2.58
+CREATE TABLE [Singer] (
+  [Id] int IDENTITY (1,1) NOT NULL
+, [Name] nvarchar(100) NOT NULL
+, [NickName] nvarchar(100) NULL
+);
+GO
+ALTER TABLE [Singer] ADD CONSTRAINT [PK_Singer] PRIMARY KEY ([Id]);
+GO

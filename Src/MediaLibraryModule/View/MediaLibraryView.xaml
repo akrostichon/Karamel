@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="MediaLibrary.View.MediaLibraryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:filter="clr-namespace:DataGridFilterLibrary;assembly=DataGridFilterLibrary"
+             xmlns:dragDrop="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="350">
+    <UserControl.Resources>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Rectangle Fill="Firebrick" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Width="10"/>
+        <StackPanel Background="Firebrick" Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+            <DockPanel></DockPanel>
+        </StackPanel>
+        <DataGrid AutoGenerateColumns="False" Name="MediaLibrary" SelectionMode="Extended" CanUserSortColumns="True"
+                  VerticalAlignment="Stretch" HorizontalContentAlignment="Center"
+                  ItemsSource="{Binding Path=MediaLibraryItems}"
+                  Background="Snow" Foreground="Black"
+                  Grid.Column="1" Grid.Row="1" MinHeight="240"
+                  dragDrop:DragDrop.IsDragSource="True"
+                  dragDrop:DragDrop.DragDropContext="Media"
+                  dragDrop:DragDrop.UseDefaultDragAdorner="True"
+                  filter:DataGridExtensions.UseBackgroundWorkerForFiltering="True"
+                  filter:DataGridExtensions.IsFilterVisible="True"
+                  IsReadOnly="True" FontSize="15"
+                  ColumnHeaderStyle="{StaticResource {ComponentResourceKey 
+		                       TypeInTargetAssembly={x:Type filter:DataGridHeaderFilterControl}, 
+		                       ResourceId=DataGridHeaderFilterControlStyle}}">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Name="EnqueueSongsMenuItem" Header="Enqueue" Click="MenuItem_OnClick" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+            <DataGrid.Resources>
+                <Style TargetType="DataGridRow">
+                    <EventSetter Event="MouseDoubleClick" Handler="MediaLibrary_MouseDoubleClick"/>
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Artist" Binding="{Binding Artist}" Width="*" FontSize="12"/>
+                <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*" FontSize="12"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Rectangle Fill="Firebrick" Grid.Column="2" Grid.Row="0" Grid.RowSpan="3" Width="10"/>
+        <StackPanel Grid.Column="1" Grid.Row="2" Background="Firebrick" Orientation="Horizontal" Height="30">
+            <Button Name="AddToLibraryButton" Margin="0,2,5,2" Width="60" Command="{Binding Path=AddToLibraryCommand}">Library</Button>
+            <Button Name="RefreshLibraryButton" Margin="0,2,5,2" Width="60" Command="{Binding Path=RefreshLibraryCommand}">Refresh</Button>
+            <Button Name="ExportListButton" Margin="0,2,5,2" Width="65" Command="{Binding Path=ExportListCommand}">Export List</Button>
+            <Button Name="DetectDuplicatesButton" Margin="0,2,5,2" Width="90" Command="{Binding Path=DetectDuplicatesCommand}">Find Duplicates</Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

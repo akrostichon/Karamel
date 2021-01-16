@@ -1,0 +1,4 @@
+TagLib-Sharp: LGPL
+Prism: Apache 2.0
+DataGridFilter: BSD 2- clause license
+GongSolutions WPF DragDrop: BSD 3- clause license

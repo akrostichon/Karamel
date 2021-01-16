@@ -1,0 +1,46 @@
+User stories:
+1. Starting up for the first time and importing media
+when the user starts the program for the first time the bootloader
+should start the media library module and see that no media library has been selected.
+A prompt is shown that lets the user select the destined directory.
+
+2. Synchronizing the media library
+the media library can be synchronized at any time by clicking the search icon
+to search for new tracks within the library
+
+3. Playing songs in private mode
+Playing songs within the private mode should be really easy. Either one selects Shuffle
+to play without selecting any songs or one adds songs to the playlist by selecting them
+and pressing the up-arrow or opening the context menu and adding them there
+
+4. Playing songs in karaoke bar mode
+The KaraokeBar mode delivers some extra functionality. A Karaoke Bar owner wants to register singer names
+when a singer last sang a song and who should sing next. Singers will probably only be known by their first names.
+It is therefore highly probable that there will be duplicate names. This can only be resolved by splitting the names
+into screen-names (shown on splash screen) and descriptive-names (or surnames if known) ("the big one", "brown hair")
+
+a) the add-song-bar
+in karaoke bar mode, three text-boxes/action-boxes are added between player and singers+library.
+A song can be added to the playlist by selecting it and clicking the up arrow above the library and then the plus button
+or up arrow above the add-song-bar. In this case it will be added without any singer.
+A singer can be selected before or after a song is selected. A singer without a song can't be added to the playlist.
+Multiple singers can be added. They will be shown in action-"bubbles". Songs and singers can be selected with drag&drop.
+A singer-screen name can also directly be added by typing it within an action-bubble. The action-bubble will show auto-fills
+for already existing singers with "firstName - descriptive name". Otherwise a new singer will be added on clicking the up button.
+This will show a small dialog offering [firstName] - [Enter descriptive name] for all entered singers that are not present
+within the database. This dialog can be skipped once or always -> settings
+NOTE: add song bar can auto fill the selected song from the media library - this could be an option
+
+b)
+New singers can also be added by clicking the add singer line within the Singer selection.
+Singers can be deleted within a context menu - right click - delete.
+
+5. Presenting songs in karaoke bar mode
+Splash screens before and after songs can be configured within the settings.
+The settings offer: shown time, background image, stop playback after song, show nextSong splash, show last-song splash
+The lastSong splash is shown directly after a song is finished for a configurable time. Then the player heads on
+to the nextSong splash screen which will be kept till the play button is pressed or also for a configurable time if 
+stop playback after song is disabled.
+
+6. Pause
+in karaoke-bar-mode it is possible to announce a pause. this is a context menu action within the playlist.

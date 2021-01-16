@@ -1,0 +1,764 @@
+---------------------------------------------------------------------------
+
+Library:      KCDGPlayer.dll
+Copyright:    Kelvin Lawson (2014)
+Author:       Kelvin Lawson <kelvinl@users.sf.net>
+
+---------------------------------------------------------------------------
+
+INTRODUCTION
+
+KCDGPlayer is a DLL component that can be used to add karaoke playback
+support to Windows applications.
+
+It supports playback of MP3+CDG and WAV+CDG files, with an internal media
+player for audio and video playback. Applications need only open the DLL
+and pass the filename details in order to add full karaoke playback
+support.
+
+It takes care of the entire CDG playback process, allowing you to build
+karaoke applications without understanding anything about the CD+G format
+or writing any graphics/audio playback code.
+
+Playback can occur in a separate window automatically created by the DLL
+or can be placed into a control in the calling applications own form.
+
+In separate window mode, the karaoke playback window can be resized and
+moved around the screen by the user without any intervention by the
+application. Applications have full control over the playback window
+position and size allowing, for example, the window screen position to
+remain constant over multiple playback sessions.
+
+Multiple simultaneous display windows can be accommodated using two DLL
+sessions to support the common preview window + full-screen window design.
+
+All graphic scaling is done internally using very fast graphics routines,
+taking all of this burden away from the application developer.
+
+The instantaneous song playback position can be queried to support features
+such as progress bars within an application, and full seek support is
+provided so that applications may implement fast-forward and rewind. Seeks
+can also be made to arbitrary song positions, to support features like
+clicking on any point in a progress bar and seeking to that point. The seek
+feature uses a highly-optimised method to ensure that there are minimal
+decoding delays during the seek, and lyrics remain exactly synchronised at
+the new location.
+
+Applications may also take advantage of the transparent mode, which
+overlays the CDG graphics on to a bitmap background image. Simple
+background motion is optionally supported through the scrolling feature,
+which support large background images which are scrolled around randomly
+giving the appearance of moving video from a simple static image.
+
+Transparent mode also optionally supports lyric borders, which can improve
+the appearance when the CDG graphic colours are similar to those used in
+the background image.
+
+A sample background image is provided in the backgrounds folder. This
+image was retrieved from the Internet and may not have appropriate rights
+for distribution to customers.
+
+Applications that prefer to use their own audio playback engine rather than
+the DLL's internal audio player are also accommodated. In this case the
+DLL does all graphic and other operations and simply disables the internal
+audio player.
+
+The DLL has been designed and implemented with highly optimal performance
+as a key requirement. Optimisations are made at every stage to ensure that
+the CPU load is kept to an absolute minimum. API calls are also available
+to give the application further control over important performance controls
+such as the display framerate.
+
+KCDGPlayer builds on many years of experience building CDG decoding
+software, with vast amounts of testing across CDGs from many manufacturers.
+It takes considerable time and experience to build a CDG decoder which can
+cater for the many quirks found in CDGs in the wild.
+
+---------------------------------------------------------------------------
+
+QUICK START GUIDE:
+
+A basic CDG playback session can be started from your application using
+three simple calls (not language-specific):
+
+ DllHandle = CDGPlayerOpen(WinHandle, "songfile.cdg", "songfile.mp3", 0)
+ CDGPlayerShow(DllHandle)
+ CDGPlayerPlay(DllHandle)
+
+Many more API calls are exported by the DLL for supporting setting the
+window position etc, but these are the basic 3 calls required to start a
+playback session.
+
+The DLL can be used by Windows applications using any programming language
+which supports DLLs.
+
+---------------------------------------------------------------------------
+
+USING EXTERNAL AUDIO PLAYERS:
+
+If desired, applications can use their own external audio player rather
+than the DLL's internal audio player. The basic session management is as
+follows:
+
+ // Session start
+ DllHandle = CDGPlayerOpenExt(WinHandle, "songfile.cdg", 0, 0)
+ CDGPlayerShow(DllHandle)
+
+ // At regular intervals
+ CDGPlayerPosSet(AudioPlaybackPos)
+
+The key differences are that a different function is used for opening the
+DLL (which does not require an audio filename), and it is not necessary to
+call CDGPlayerPlay(). Also while the application's audio player is running
+it should regularly update the DLL with the audio's current position. This
+allows the DLL to keep the graphics updated to the same playback position
+as the external audio player. A sensible graphic update rate might be 30
+frames per second, which requires a timer or similar to call
+CDGPlayerPosSet() 30 times per second.
+
+---------------------------------------------------------------------------
+
+API DOCUMENTATION:
+
+There follows a full description of each API exported by the DLL.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerOpen (hHandle, CDGFileName, AudioFileName, ParentWindow)
+Params:   hHandle - Application's window handle
+          CDGFileName - Pointer to CDG file name string
+          AudioFileName - Pointer to sound file name string
+          ParentWindow - Optional parent control handle
+Returns:  DLL instance handle which should be passed to subsequent calls
+
+Open a DLL instance.
+
+This is the first call made from the application to open
+a new DLL handle. The DLL will be loaded now, but the graphics window will
+not be visible and no audio playback will start until further calls are
+made by the application. All further calls by the application should pass
+in the DLL handle returned by this call.
+
+Applications pass in their window handle and pointers to strings
+containing the song's CDG and sound file pairs (e.g. "song.cdg" and 
+"song.mp3"). Applications must store the DLL handle returned by this call
+for use when making further requests of the DLL.
+
+Applications that wish to use their own external audio player instead of
+the DLL's internal audio player (e.g. to add pitch-shifting support) can
+instead use the CDGPlayerOpenExt() function to open the DLL.
+
+A ParentWindow handle of 0 requests the DLL to create its own player
+window. If you wish to place the player graphics in a form within your
+application, you may pass a handle to the control via ParentWindow. In
+this mode a separate window is not created, and the player is painted in
+the passed location within the application's own form. This allows you to
+more closely integrate the player with an application's own user interface.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerOpenExt (hHandle, CDGFileName, ParentWindow, InternalAudioTimer)
+Params:   hHandle - Application's window handle
+          CDGFileName - Pointer to CDG file name string
+          ParentWindow - Optional parent control handle
+          InternalAudioTimer - 1 = Enable internal audio timer, 0 = Disable
+Returns:  DLL instance handle which should be passed to subsequent calls
+
+Open a DLL instance without using the DLL's internal audio player.
+
+This is an alternative to the standard CDGPlayerOpen() for applications
+that wish to use their own external audio playback engine. The only
+difference is that the song file name is not passed, as this is not needed
+by the DLL when the calling application is taking care of audio playback.
+
+This is the first call made from the application to open a new DLL handle.
+The DLL will be loaded now, but the graphics window will not be visible
+until further calls are made by the application. All further calls by the
+application should pass in the DLL handle returned by this call.
+
+Applications pass in their window handle and a pointer to a string
+containing the song's CDG filename (e.g. "song.cdg"). Applications must
+store the DLL handle returned by this call for use when making further
+requests of the DLL.
+
+When an external audio player is used, the calling application should
+regularly call CDGPlayerPosSet() to tell the DLL the current audio
+playback position. This might be done 30 times per second for a 30fps
+graphic update.
+
+It is also possible to request that the DLL maintains its own internal
+song position to avoid forcing the application to make regular 
+CDGPlayerPosSet() song position updates. This is inadvisable because it
+can only guess what the current exact song position is, but could be
+useful if there are concerns that the application thread will not alway
+be able to honour the regular updates due to some other activity that
+blocks the thread. In this case you should still make semi-regular song
+position update calls via CDGPlayerPosSet() but can do so less
+frequently, perhaps once every second or two. These semi-regular updates
+make sure that resyncs do occur eventually and the internal DLL timer
+should not get significantly out of sync within a couple of seconds.
+
+A ParentWindow handle of 0 requests the DLL to create its own player
+window. If you wish to place the player graphics in a form within your
+application, you may pass a handle to the control via ParentWindow. In
+this mode a separate window is not created, and the player is painted in
+the passed location within the application's own form.  This allows you to
+more closely integrate the player with an application's own user interface.
+
+Applications that wish to use the DLL's internal audio player should
+instead use the CDGPlayerOpen() function to open the DLL.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerClose (DllHandle)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+Returns:  None
+
+Close a DLL instance.
+
+Applications must call this when they are finished with a song. The DLL
+must be closed and reloaded to play multiple songs, so each song requires a
+CDGPlayerOpen() and CDGPlayerClose() pair.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerShow (hHandle)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+Returns:  None
+
+Make the DLL's window visible.
+
+The playback window is not visible when the DLL is first opened, allowing
+you to set the x,y position, scaling, title etc if you wish before finally
+calling this function to make the window visible.
+
+---------------------------------------------------------------------------
+
+
+Function: CDGPlayerHide (hHandle)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+Returns:  None
+
+Hide the DLL's window.
+
+Allows you to hide the playback window, after it has previously been made
+visible via CDGPlayerShow().
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerDefaultColourSet (hHandle, RGBColour)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+          RGBColour - Integer containing RGB value
+Returns:  None
+
+Set the default colour for the playback window.
+
+If the CDG playback window is made visible via a call to CDGPlayerShow()
+before the CDG decode has begun, it will make itself visible as a blank
+window with a default colour. Applications that wish to make the window
+visible without a CDG decode in progress can set the colour of this blank
+window.
+
+The RGBColour value is an integer containing 4 bytes of ARGB. The most
+significant byte (Alpha) is ignored, so only the bottom 3 bytes (RGB) need
+to be set. To set a Red default window colour in VB, pass hex value
+FF0000 for RGBColour. Black is 000000 and white is FFFFFF.
+
+VB applications can set the colour to the containing form's colour using:
+  CDGPlayerDefaultColourSet (DllHandle, Me.BackColor.ToArgb())
+
+To set fixed colours, simply pass the hex value, for example black:
+  CDGPlayerDefaultColourSet (DllHandle, &H000000)
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerTopGet (hHandle)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+Returns:  Integer containining Top pixel offset
+
+Get the current Top window position.
+
+Returns the playback window's top pixel offset in the y-axis. Usually used
+when a song is finished in order to find out the window's screen position
+so that the same position can be used for the next song. The user can move
+the window around the screen as desired, therefore applications that wish
+to know the user's current position must request this information from the
+DLL.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerLeftGet (hHandle)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+Returns:  Integer containing Left pixel offset
+
+Get the current Top window position.
+
+Returns the playback window's left pixel offset in the x-axis. Usually used
+when a song is finished in order to find out the window's screen position
+so that the same position can be used for the next song. The user can move
+the window around the screen as desired, therefore applications that wish
+to know the user's current position must request this information from the
+DLL.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerTopSet (hHandle, PosTop)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+          PosTop - Integer containing Top pixel offset
+Returns:  None
+
+Set the current Top window position.
+
+Set the playback window's top pixel offset in the y-axis. Usually used when
+a new song is started in order to set the window's screen position to the
+same position as that used for the last song.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerLeftSet (hHandle, PosLeft)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+          PosLeft - Integer containing Left pixel offset
+Returns:  None
+
+Set the current Left window position.
+
+Set the playback window's left pixel offset in the x-axis. Usually used
+when a new song is started in order to set the window's screen position to
+the same position as that used for the last song.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerWidthGet (hHandle)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+Returns:  Integer containing pixel width
+
+Get the current window width.
+
+Returns the playback window's pixel width. Usually used when a song is
+finished in order to find out the window's size so that the same scaling
+can be used for the next song. The user can resize the window as desired,
+therefore applications that wish to know the user's current window size
+must request this information from the DLL.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerHeightGet (hHandle)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+Returns:  Integer containing pixel height
+
+Get the current window height.
+
+Returns the playback window's pixel height. Usually used when a song is
+finished in order to find out the window's size so that the same scaling
+can be used for the next song. The user can resize the window as desired,
+therefore applications that wish to know the user's current window size
+must request this information from the DLL.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerWidthSet (hHandle)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+          Width - Integer containing pixel width
+Returns:  None
+
+Set a new window width.
+
+Sets the playback window's pixel width. Usually used when a new song is
+started in order to set the window's size to match that uesd for the last
+song. New song playback windows otherwise default to the standard unscaled
+CDG resolution.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerHeightSet (hHandle)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+          Height - Integer containing pixel height
+Returns:  None
+
+Set a new window height.
+
+Sets the playback window's pixel height. Usually used when a new song is
+started in order to set the window's size to match that uesd for the last
+song. New song playback windows otherwise default to the standard unscaled
+CDG resolution.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerCaptionSet (hHandle, Caption)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+          Caption - Pointer to new title string
+Returns:  None
+
+Set a new window title.
+
+Uses the passed string as the "caption" or title bar for the playback
+window. New song playback window titles otherwise default to the playback
+filename.
+
+This is only used when the DLL has created its own window - it is not used
+when a ParentWindow was passed on creation and thus the player is being
+painted within the application's own form.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerVisible (hHandle)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+Returns:  Integer containing 1 (Visible) or 0 (Not visible)
+
+Query whether the DLL playback window is currently visible.
+
+Allows the application to query whether the playback window is currently
+visible. Windows are made visible through a call to CDGPlayerShow().
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerLengthGet (hHandle)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+Returns:  Integer containing song length in milliseconds.
+
+Get the length of the sound file in milliseconds.
+
+Applications can query this to determine the length of the song in
+milliseconds. This is commonly used to add information to the application's
+GUI such as a progress bar showing the instantaneous playback position
+within the song.
+
+Note that this API is not valid for applications using an external audio
+player. In this case the application can calculate the song length using
+its own audio playback engine.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerPosGet (hHandle)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+Returns:  Integer containing current millisecond song playback position.
+
+Get the current playback position within the sound file.
+
+Applications can query this to determine the instantaneous playback
+position within the song file (in milliseconds). For example this might be
+polled regularly and used in conjunction with the CDGPlayerLengthGet()
+function to display a moving progress bar.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerPlay (hHandle)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+Returns:  None
+
+Start the media playing.
+
+The DLL does not start playback immediately on opening via CDGPlayerOpen().
+The application must call CDGPlayerShow() first to make the playback
+window visible and then CDGPlayerPlay() in order to start media playback.
+
+Can also be used to resume playback on a paused song.
+
+Note that this API is not valid for applications using an external audio
+player. It is not necessary because there is no audio playback to start,
+and graphic playback will begin as soon as the application calls
+CDGPlayerPosSet() during audio playback.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerPause (hHandle)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+Returns:  None
+
+Pause the media playback.
+
+Pause a currently-playing song. Playback can be resumed from the pause
+position using CDGPlayerPlay() or CDGPlayerPause().
+
+Note that this API is not valid for applications using an external audio
+player. It is not necessary because on pausing playback the application
+will stop passing increasing playback positions to the CDGPlayerPosSet()
+function.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerSeek (hHandle, DeltaSecs)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+          DeltaSecs: Number of secs to seek (+ve: forward, -ve: backward)
+Returns:  None
+
+Seek forward/backward in the song (FF/REW).
+
+Applications can seek forward in the song by passing a positive number of
+seconds for DeltaSecs, and backward using a negative number of seconds.
+
+Note that this API is not valid for applications using an external audio
+player. It is not necessary because seeks can be performed by the calling
+application by simply calling CDGPlayerPosSet() with new seek positions.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerPosSet (hHandle, Millisecs)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+          Millisecs: Millisecond song playback position
+Returns:  None
+
+Request a screen draw/blit.
+
+This is only required for applications using their own external audio
+playback engine. It is used by the calling application to keep the DLL
+notified of the progress throughout the song. Applications should
+regularly query their own audio player to get the current song position and
+pass it to the DLL so that the graphics can be updated to match the song
+position.
+
+A sensible update interval would be 30 times per second, to achieve a
+30fps graphic update rate.
+
+Applications can also make the graphics seek to arbitrary points in the
+song by passing in random song positions. The application's audio player
+can thus seek forward and backward and just need to notify the DLL what the
+new position is to make the graphics playback seek to the same point.
+
+Applications which request that the DLL maintains an internal audio
+position timer (via InternalAudioTimer parameter to CDGPlayerOpenExt())
+should still call here regularly but can do so less frequently, perhaps
+once every second or two. This ensures that any loss of sync is only very
+slight, which should not be noticeable within a period of a couple of
+seconds.
+
+Note that this API is not valid for applications using the DLL's internal
+audio player.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerTransparencyBackgroundSet (hHandle, ImageFileName)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+          ImageFileName - Ponter to string containing image filename
+Returns:  None
+
+Set a background image file to be used in transparent mode.
+
+Applications can enable transparent mode in which the CDG graphics are
+overlaid on the top of a bitmap image. This function is used to tell the
+DLL the filename for the background image (which must be in BMP format).
+
+The background image (and transparency mode) will not be used unless a call
+is made to CDGPlayerTransparencyEnableSet(). This should be done before
+calling CDGPlayerPlay() - the transparency settings should be configured in
+advance of the song playback.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerTransparencyEnableSet (hHandle, Enable)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+          Enable - Integer containing 0 (False) or 1 (True)
+Returns:  None
+
+Enable transparency mode.
+
+This can be used to enable transparency mode, in which the CDG graphics are
+overlaid on the top of a bitmap image. You must also set a background image
+using CDGPlayerTransparencyBackgroundSet(), and all of this must be done
+before the song playback is started using CDGPlayerPlay().
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerTransparencyScrollEnableSet (hHandle, Enable)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+          Enable - Integer containing 0 (False) or 1 (True)
+Returns:  None
+
+Enable scrolling in transparency mode.
+
+This can be used to enable scrolling in transparency mode, for which very
+large background images can be used with the image scrolling randomly in
+the background. This gives the impression of moving video while still using
+a simple static bitmap image. This is optional and defaults to off (static
+background image scaled to fit the window).
+
+You must also set a background image using
+CDGPlayerTransparencyBackgroundSet() and enable transparency mode using
+CDGPlayerTransparencyEnableSet(). All of this must be done before the song
+playback is started using CDGPlayerPlay().
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerTransparencyBorderEnableSet (hHandle, Enable)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+          Enable - Integer containing 0 (False) or 1 (True)
+Returns:  None
+
+Enable lyric borders in transparency mode.
+
+When enabled the a border is applied to all CDG lyric graphics in
+transparent mode. This is optional, by default there is no border added to
+the lyrics, but borders can improve the appearance with some combination of
+CDG graphics and background images (if they have similar colours).
+
+You must also set a background image using
+CDGPlayerTransparencyBackgroundSet() and enable transparency mode using
+CDGPlayerTransparencyEnableSet(). All of this must be done before the song
+playback is started using CDGPlayerPlay().
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerResampleFilterSet (hHandle, FilterType)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+          FilterType - Integer 0: No Filter (lowest CPU load)
+                               1: Bell filter
+                               2: B-Spline filter
+                               3: Lanczos3 filter
+                               4: Mitchell filter
+Returns:  None
+
+Set a resampling/blurring filter.
+
+Applies to the CDG graphics only, not the background bitmap in transparency
+mode.
+
+NOTE that CPU load is increased considerably when using filters. Filters
+are of different complexity and have differing effects on the CPU load.
+
+Can be called at any time to update the filter used during playback.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerMaxScreenUpdatesPerSecSet(hHandle, updates_per_sec)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+          updates_per_sec - Integer containing max updates per second
+Returns:  None
+
+Set the max screen updates per second.
+
+This is the max number of times the screen can actually be painted every
+second. You can use this to prevent the player exceeding a particular 
+update rate (frames per second / FPS), in order to limit the CPU load
+associated with the player. Painting the screen is the only CPU-intensive
+activity it carries out.
+
+It can affect CPU load quite considerably if set too high, but
+thankfully because CDG graphics are so basic it is not necessary to set it
+very high. The default 15fps should be more than adequate and it could be
+set lower if necessary.
+
+Note that it does not always actually use the full update rate. The player
+is optimised to not perform any screen updates if the CDG graphics have not
+changed, which can be the case during instrumentals and quieter sections
+of a song. In this case the udpate rate (and hence CPU load) used by the
+player can drop significantly, for very efficient usage of the CPU. In
+other words this sets the maximum FPS but for optimal efficiency the player
+will use a lower FPS when possible.
+
+The value defaults to 15 updates per second.
+
+Note that this parameter is not used when in scrolling mode which uses a
+different refresh rate parameter.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerMaxForcedUpdatesPerSecSet(hHandle, updates_per_sec)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+          updates_per_sec - Integer containing max updates per second
+Returns:  None
+
+Set the max forced updates per second.
+
+It is not typically required to change this value, but it is provided for
+full configurability of the player.
+
+This limits the maximum number of times a forced screen update can occur
+per second. Forced screen updates only occur during OnPaint events such as
+when the player window is obscured by another application window, and then
+revealed again. The forced update ensures that the screen is refreshed to
+reveal the CDG graphics again when no longer obscured. In practice these
+happen very infrequently and are also only ever required during periods of
+no CDG graphics updates (e.g. during instrumentals), otherwise the screen
+will be updated by new CDG graphics updates anyway.
+
+This simply limits the number of these forced updates that can occur per
+second, to ensure that a slew of events do not consume significant CPU
+load. 
+
+The value defaults to maximum 10 updates per second. This should be more
+than adequate for all cases because these events are unlikely anyway, but
+the rate could easily be set much lower. The only side effect of a lower
+value would be that if the window was obscured and then revealed again by
+another application window, it would take longer before the screen was
+repainted again - if and only if no CDG graphics updates were occurring.
+If CDG graphics updates were occurring (i.e. lyrics are changing) then
+there would be no visible delay before the repaint anyway, so you need not
+rely on these events causing the repaint.
+
+It is also not usually necessary to be concerned with this in typical
+karaoke hosting solutions which rarely have other application windows
+dragged over the player window by a user.
+
+Note that this parameter is not used when in scrolling mode which uses a
+fixed refresh rate and will always update the screen at predefined regular
+intervals, rather than on asynchronous events like OnPaint / window
+obscured.
+
+---------------------------------------------------------------------------
+
+Function: CDGPlayerScrollFixedUpdatesPerSecSet(hHandle, updates_per_Sec)
+Params:   DllHandle - DLL handle returned when the DLL is opened.
+          updates_per_sec - Integer containing updates per second
+Returns:  None
+
+Sets the fixed refresh rate when in scrolling mode.
+
+MaxScreenUpdatesPerSec and MaxForcedUpdatesPerSec are ignored in scrolling
+mode and we just use a fixed refresh rate to ensure a smooth constant
+scrolling speed. A high value will affect CPU load. Too low a value will
+make the scrolling less smooth, but will improve CPU load on low-end
+systems.
+
+Unlike non-scrolling mode, the update rate is always used throughout a
+song whether CDG graphics updates are occurring in the song or not. This
+is because the scrolling still needs to occur, even during quiet periods
+of the song. In non-scrolling mode the player can take advantage of
+quieter graphics periods to not bother making any screen refreshes and
+reduce CPU load.
+
+The value defaults to 50 milliseconds, which equates to 20 repaints per
+second.
+
+Note that this parameter is only used when in scrolling mode.
+
+---------------------------------------------------------------------------
+
+SOURCE TREE:
+
+ * backgrounds   Sample background image bitmaps
+ * dll           DLL Binary
+ * delphi_app    Delphi sample app
+ * vb_app        VB.NET sample app
+ * vb_app_ext    VB.NET sample app (external audio player)
+ * vb_app_parent VB.NET sample app (player window on app form)
+ * vb_app_extp   VB.NET sample app (external audio, player window on app form)
+ * vb_app_dual   VB.NET sample app (dual players, external audio)
+ * vb_app_full   VB.NET sample app (all API features exercised by single app)
+
+The widest variety in sample usages is demonstrated in the VB.NET samples.
+
+Sample "vb_app" is a simple player with everything handled by the DLL.
+
+Sample "vb_app_ext" demonstrates the external audio player mode, which
+allows applications to use their own audio playback engine and only use the
+DLL for graphics rendering. 
+
+Sample "vb_app_parent" demonstrates rendering the graphics within the
+calling application's own window, rather than having the DLL create a
+separate window for graphics. This is for power users who wish to more
+closely integrate CDG playback within their own application user interface.
+
+Sample "vb_app_extp" demonstrates the combination of external audio player
+and rendering graphics within the calling application's own window.
+
+Sample "vb_app_dual" demonstrates dual playback windows using two
+different DLL sessions. A single application has two internal player panels
+and the two DLL sessions each paint into one of these. This example uses an
+external audio player provided by the application.
+
+Sample "vb_app_full" demonstrates every single DLL feature in a single
+application, with configuration options for every combination of modes and
+control of refresh rates. Also supports the internal audio timer mode which
+can be used together with external audio players.
+
+---------------------------------------------------------------------------

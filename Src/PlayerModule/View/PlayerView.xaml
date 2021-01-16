@@ -1,0 +1,223 @@
+﻿<UserControl x:Class="PlayerControl.View.PlayerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:userControls="clr-namespace:Karamel.Infrastructure.UserControls;assembly=Karamel.Infrastructure"
+             mc:Ignorable="d" 
+             d:DesignHeight="45" d:DesignWidth="1024">
+    <Grid>
+        <Grid.Resources>
+            <ImageBrush x:Key="LastSongButtonImageBrush" ImageSource="/PlayerControl;component/Resources/LastSongButton.png" Stretch="UniformToFill"/>
+            <ImageBrush x:Key="NextSongButtonImageBrush" ImageSource="/PlayerControl;component/Resources/NextSongButton.png" Stretch="UniformToFill"/>
+            <ImageBrush x:Key="PauseButtonImageBrush" ImageSource="/PlayerControl;component/Resources/PauseButton.png" Stretch="UniformToFill"/>
+            <ImageBrush x:Key="PlayButtonImageBrush" ImageSource="/PlayerControl;component/Resources/PlayButton.png" Stretch="UniformToFill"/>
+            <ImageBrush x:Key="SpeakerButtonImageBrush" ImageSource="/PlayerControl;component/Resources/Speaker.png" Stretch="UniformToFill"/>
+            <ImageBrush x:Key="StopButtonImageBrush" ImageSource="/PlayerControl;component/Resources/StopButton.png" Stretch="UniformToFill"/>
+            <ImageBrush x:Key="HelpButtonImageBrush" ImageSource="/PlayerControl;component/Resources/HelpButton.png" Stretch="None"/>
+            <!-- This style is used for buttons, to remove the WPF default 'animated' mouse over effect -->
+            <Style x:Key="MyButtonStyle" TargetType="Button">
+                <Setter Property="OverridesDefaultStyle" Value="True"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Name="border" 
+                            BorderThickness="0"
+                            BorderBrush="Black"
+                            Background="{TemplateBinding Background}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="BorderThickness" Value="1" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Opacity" Value="0.4" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="SliderProgressStyle" TargetType="{x:Type ProgressBar}">
+                <Setter Property="Foreground" Value="#FFB00606"/>
+                <Setter Property="Background" Value="LightGray"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Opacity" Value="0.5"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ProgressBar}">
+                            <Grid x:Name="TemplateRoot">
+                                <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}"/>
+                                <Rectangle x:Name="PART_Track"/>
+                                <Grid x:Name="PART_Indicator" ClipToBounds="True" HorizontalAlignment="Left">
+                                    <Rectangle x:Name="Indicator" Fill="{TemplateBinding Foreground}" RadiusX="5" RadiusY="3"/>
+                                </Grid>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Grid.Resources>
+        <ToolBarPanel Height="45" VerticalAlignment="Top">
+            <ToolBar Height="45" IsManipulationEnabled="False" AllowDrop="False" ToolBarTray.IsLocked="True" OverflowMode="Never">
+                <Button Style="{StaticResource MyButtonStyle}" Command="{Binding Path=PreviousSongCommand}"
+                        Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50"
+                        Name="LastSongButton" ToolTip="Previous Track"
+                        Background="{StaticResource LastSongButtonImageBrush}"/>
+                <Button Style="{StaticResource MyButtonStyle}" Command="{Binding Path=PlayCommand}"
+                        Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50"
+                        Name="PlayButton" ToolTip="Play"
+                        Background="{StaticResource PlayButtonImageBrush}" />
+                <Button Style="{StaticResource MyButtonStyle}" Command="{Binding Path=PauseCommand}"
+                        Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50"
+                        Name="PauseButton" ToolTip="Pause Playback"
+                        Background="{StaticResource PauseButtonImageBrush}" />
+                <Button Style="{StaticResource MyButtonStyle}" Command="{Binding Path=StopCommand}"
+                        Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50"
+                        Name="StopButton" ToolTip="Stop Playback"
+                        Background="{StaticResource StopButtonImageBrush}" />
+                <Button Style="{StaticResource MyButtonStyle}" Command="{Binding Path=NextSongCommand}"
+                        Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50"
+                        Name="NextSongButton" ToolTip="Next Track"
+                        Background="{StaticResource NextSongButtonImageBrush}" />
+                <ToggleButton Name="ShuffleButton" ToolTip="Toggle Shuffling"
+                              Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50"
+                              IsChecked="{Binding SequentialPlayback}">
+                    <ToggleButton.Resources>
+                        <BitmapImage x:Key="ImgChecked" UriSource="/PlayerControl;component/Resources/StandardPlaybackButton.png"/>
+                        <BitmapImage x:Key="ImgNormal" UriSource="/PlayerControl;component/Resources/ShuffleButton.png"/>
+                    </ToggleButton.Resources>
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Image x:Name="PART_Image" Source="{StaticResource ImgNormal}" Stretch="Fill"/>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="true">
+                                                <Setter TargetName="PART_Image" Property="Source" Value="{StaticResource ImgChecked}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="false">
+                                                <Setter TargetName="PART_Image" Property="Opacity" Value="0.6"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+                <ToggleButton Name="StopPlaybackAfterSongButton" ToolTip="Toggle stop playback after song"
+                              Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50"
+                              IsChecked="{Binding StopPlaybackAfterSong}">
+                    <ToggleButton.Resources>
+                        <BitmapImage x:Key="ImgChecked" UriSource="/PlayerControl;component/Resources/StopPlaybackAfterSongButtonArmed.png"/>
+                        <BitmapImage x:Key="ImgNormal" UriSource="/PlayerControl;component/Resources/StopPlaybackAfterSongButton.png"/>
+                    </ToggleButton.Resources>
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Image x:Name="PART_Image" Source="{StaticResource ImgNormal}" Stretch="Fill"/>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="true">
+                                                <Setter TargetName="PART_Image" Property="Source" Value="{StaticResource ImgChecked}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="false">
+                                                <Setter TargetName="PART_Image" Property="Opacity" Value="0.6"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+                <ToggleButton Name="ExpertButton" ToolTip="Toggle Expert Mode"
+                              Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50"
+                              IsChecked="{Binding ExpertMode}">
+                    <ToggleButton.Resources>
+                        <BitmapImage x:Key="ImgChecked" UriSource="/PlayerControl;component/Resources/ExpertModeButton.png"/>
+                        <BitmapImage x:Key="ImgNormal" UriSource="/PlayerControl;component/Resources/ExpertModeButtonDisabled.png"/>
+                    </ToggleButton.Resources>
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Image x:Name="PART_Image" Source="{StaticResource ImgNormal}" Stretch="Fill"/>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="true">
+                                                <Setter TargetName="PART_Image" Property="Source" Value="{StaticResource ImgChecked}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="false">
+                                                <Setter TargetName="PART_Image" Property="Opacity" Value="0.6"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+                <Separator/>
+                <Image Height="20" HorizontalAlignment="Left" Name="PlayProgress" VerticalAlignment="Center" Width="20">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding PlaybackPaused}" Value="false">
+                                    <Setter Property="Source" Value="/PlayerControl;component/Resources/SongProgress.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding PlaybackPaused}" Value="true">
+                                    <Setter Property="Source" Value="/PlayerControl;component/Resources/SongPaused.png"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+                <StackPanel Orientation="Vertical" FlowDirection="LeftToRight" MouseMove="SongProgressSlider_MouseMove" MouseLeftButtonDown="SongProgressSlider_MouseLeftButtonDown" >
+                    <userControls:MarqueeTextBlock Name="ArtistTitleTextBlock" MarqueeStopTimeInBeginning="5" MarqueeTimeInSeconds="10" Text="No artist - no title" Height="20" VerticalAlignment="Center" Width="300" Margin="5,2,5,2"/>
+                    <ProgressBar Height="20" HorizontalAlignment="Left" Name="SongProgressSlider" Style="{DynamicResource SliderProgressStyle}" VerticalAlignment="Center" Width="300" IsEnabled="False" Margin="5,2,5,2"/>
+                </StackPanel>
+                <ToggleButton Name="SongProgressButton" Height="25" HorizontalAlignment="Left" VerticalAlignment="Center" HorizontalContentAlignment="Left"
+                              ToolTip="Toggle Time Display Mode" IsChecked="{Binding ShowRemainingTime}"
+                              Content="0:00" >
+                    <!-- use template to overwrite standard 'isChecked' behavior-->
+                    <ToggleButton.Template>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border Name="Border" CornerRadius="3">
+                                <ContentPresenter
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="BorderThickness" Value="2" />
+                                    <Setter TargetName="Border" Property="BorderBrush" Value="Black" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </ToggleButton.Template>
+                </ToggleButton>
+                <Separator/>
+                <Button Height="20" HorizontalAlignment="Left" Name="VolumeButton" VerticalAlignment="Center" Width="20" HorizontalContentAlignment="Left" Background="{StaticResource SpeakerButtonImageBrush}" IsEnabled="False"/>
+                <Slider Height="22" HorizontalAlignment="Left" Name="VolumeSlider" VerticalAlignment="Center" Width="150" Margin="5,2,5,2" Value="{Binding Path=Volume}" Maximum="10" Minimum="0"/>
+                <Separator/>
+                <Menu>
+                    <MenuItem Height="40" Width="38" ToolTip="Help">
+                        <MenuItem.Icon>
+                            <Image Source="/PlayerControl;component/Resources/HelpButton.png"/>
+                        </MenuItem.Icon>
+                        <MenuItem Header="Help" Command="{Binding Path=ShowHelpCommand}"/>
+                        <MenuItem Header="About" Command="{Binding Path=ShowAboutBoxCommand}"/>
+                    </MenuItem>
+                </Menu>
+            </ToolBar>
+        </ToolBarPanel>
+    </Grid>
+</UserControl>

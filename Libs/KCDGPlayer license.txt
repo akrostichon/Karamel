@@ -1,0 +1,19 @@
+---------------------------------------------------------------------------
+
+Library:      KCDGPlayer.dll
+Copyright:    Kelvin Lawson (2015)
+Author:       Kelvin Lawson <kelvinl@users.sf.net>
+
+---------------------------------------------------------------------------
+
+LICENSE
+
+The licensee is given a permanent license to use the DLL in their company's
+products. This license is granted for life, and there is no limit to the
+number of the licensee's products it can be used with. Rights are granted
+to distribute the DLL to customers of the licensee for use with the
+licensee's products. The DLL cannot, however, be distributed for use within
+the products of a third party, for example by selling the DLL for use as a
+plugin in a third party's products.
+
+---------------------------------------------------------------------------

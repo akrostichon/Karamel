@@ -1,0 +1,75 @@
+﻿<UserControl x:Class="Playlist.View.PlaylistView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dragDrop="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="1024">
+    <UserControl.Resources>
+        <!-- DataGrid style -->
+        <Style x:Key="DataGridStyle1" TargetType="{x:Type DataGrid}">
+            <Setter Property="ColumnHeaderStyle" Value="{DynamicResource ColumnHeaderStyle1}"/>
+            <Setter Property="CellStyle" Value="{DynamicResource CellStyle1}"/>
+            <Setter Property="RowStyle" Value="{DynamicResource RowStyle1}"/>
+        </Style>
+        <!-- DataGridColumnHeader style -->
+        <Style x:Key="ColumnHeaderStyle1" TargetType="DataGridColumnHeader">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontSize" Value="15" />
+        </Style>
+        <Style x:Key="RowStyle1" TargetType="DataGridRow">
+            <EventSetter Event="MouseDoubleClick" Handler="PlaylistGrid_OnMouseDoubleClick"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsCurrentlyPlaying}" Value="True">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <SolidColorBrush Color="LightCoral"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Foreground">
+                        <Setter.Value>
+                            <SolidColorBrush Color="White"/>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="CellStyle1" TargetType="DataGridCell">
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+    </UserControl.Resources>
+    <Grid VerticalAlignment="Stretch" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Rectangle Fill="Firebrick" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Width="10"/>
+        <Rectangle Fill="Firebrick" Grid.Column="1" Grid.Row="0" Height="10"/>
+        <DataGrid AutoGenerateColumns="False" Name="PlaylistGrid" Background="Snow" Foreground="Cornsilk"
+                  ItemsSource="{Binding Path=PlaylistItems}" Style="{DynamicResource DataGridStyle1}"
+                  CanUserSortColumns="False" Grid.Column="1" Grid.Row="1" MinHeight="240"
+                  dragDrop:DragDrop.IsDragSource="True"
+                  dragDrop:DragDrop.IsDropTarget="True"
+                  dragDrop:DragDrop.UseDefaultDragAdorner="True"
+                  dragDrop:DragDrop.DropHandler="{Binding}"
+                  dragDrop:DragDrop.DragDropContext="Media">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Artist"  Binding="{Binding Song.Artist}" Width="*" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Title" Binding="{Binding Song.Title}" Width="*" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Singer" Binding="{Binding GetSingersAsText}" Width="*" Visibility="Hidden"/>
+                <DataGridTextColumn Header="Time since add" Binding="{Binding TimePassedSinceAdd}" Width ="*" IsReadOnly="True"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Rectangle Fill="Firebrick" Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" Width="10"/>
+    </Grid>
+</UserControl>

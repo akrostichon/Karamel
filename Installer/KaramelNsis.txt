@@ -1,0 +1,59 @@
+# define installer name
+OutFile "setup.exe"
+ 
+# set desktop as install directory
+InstallDir $DESKTOP
+ 
+# default section start
+Section
+ 
+# define output path
+SetOutPath $INSTDIR
+ 
+# specify file to go in output path
+File test.txt
+ 
+# define uninstaller name
+WriteUninstaller $INSTDIR\uninstaller.exe
+ 
+ 
+#-------
+# default section end
+SectionEnd
+ 
+# create a section to define what the uninstaller does.
+# the section will always be named "Uninstall"
+Section "Uninstall"
+ 
+# Always delete uninstaller first
+Delete $INSTDIR\uninstaller.exe
+ 
+# now delete installed files
+Delete $INSTDIR\test.txt
+
+
+# create a shortcut named "new shortcut" in the start menu programs directory
+# point the new shortcut at the program uninstaller
+CreateShortCut "$SMPROGRAMS\Karamel.lnk" "$INSTDIR\karamel.exe"
+CreateShortCut "$SMPROGRAMS\Uninstall.lnk" "$INSTDIR\uninstaller.exe"
+
+
+# second, remove the link from the start menu
+Delete "$SMPROGRAMS\Karamel.lnk"
+ 
+SectionEnd
+
+# For removing Start Menu shortcut in Windows 7
+RequestExecutionLevel user
+ 
+# start default section
+Section
+ 
+    # set the installation directory as the destination for the following actions
+    SetOutPath $INSTDIR
+ 
+    # create the uninstaller
+    WriteUninstaller "$INSTDIR\uninstall.exe"
+ 
+SectionEnd
+ 
