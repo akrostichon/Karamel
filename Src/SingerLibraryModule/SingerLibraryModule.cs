@@ -49,11 +49,6 @@ namespace SingerLibrary
         public void Initialize()
         {
             RegisterViewAndViewModel();
-
-            // get the region for this view
-            IRegion region = _regionManager.Regions[RegionNames.SingerLibraryRegion];
-            // add view inside the region
-            region.Add(_container.Resolve<SingerLibraryView>());
         }
 
         /// <summary>
@@ -62,7 +57,7 @@ namespace SingerLibrary
         private void RegisterViewAndViewModel()
         {
             _container.RegisterType<ISingerLibraryView, SingerLibraryView>();
-            _container.RegisterType<ISingerLibraryViewModel, SingerLibraryViewModel>();
+            _container.RegisterType<ISingerLibraryViewModel, SingerLibraryViewModel>(new ContainerControlledLifetimeManager());
         }
 
         #endregion Public Methods
