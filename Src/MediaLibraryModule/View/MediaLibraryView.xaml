@@ -5,11 +5,24 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:filter="clr-namespace:DataGridFilterLibrary;assembly=DataGridFilterLibrary"
              xmlns:dragDrop="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+             xmlns:styles ="clr-namespace:Karamel.Infrastructure;assembly=Karamel.Infrastructure"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="350">
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Karamel.Infrastructure;component/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
+        <Grid.Resources>
+            <ImageBrush x:Key="AddToLibraryButtonImageBrush" ImageSource="/MediaLibrary;component/Resources/database-add33x32.png" Stretch="UniformToFill"/>
+            <ImageBrush x:Key="ExportListButtonImageBrush" ImageSource="/MediaLibrary;component/Resources/export-share34x32.png" Stretch="UniformToFill"/>
+            <ImageBrush x:Key="RemoveFilterButtonImageBrush" ImageSource="/MediaLibrary;component/Resources/filter-remove18x16.png" Stretch="UniformToFill"/>
+            <ImageBrush x:Key="FindDuplicatesButtonImageBrush" ImageSource="/MediaLibrary;component/Resources/unknown-file25x32.png" Stretch="UniformToFill"/>
+            <ImageBrush x:Key="RefreshLibraryButtonImageBrush" ImageSource="/MediaLibrary;component/Resources/folder-refresh32x25.png" Stretch="UniformToFill"/>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
             <RowDefinition Height="*" />
@@ -54,11 +67,35 @@
             </DataGrid.Columns>
         </DataGrid>
         <Rectangle Fill="Firebrick" Grid.Column="2" Grid.Row="0" Grid.RowSpan="3" Width="10"/>
-        <StackPanel Grid.Column="1" Grid.Row="2" Background="Firebrick" Orientation="Horizontal" Height="30">
-            <Button Name="AddToLibraryButton" Margin="0,2,5,2" Width="60" Command="{Binding Path=AddToLibraryCommand}">Library</Button>
-            <Button Name="RefreshLibraryButton" Margin="0,2,5,2" Width="60" Command="{Binding Path=RefreshLibraryCommand}">Refresh</Button>
-            <Button Name="ExportListButton" Margin="0,2,5,2" Width="65" Command="{Binding Path=ExportListCommand}">Export List</Button>
-            <Button Name="DetectDuplicatesButton" Margin="0,2,5,2" Width="90" Command="{Binding Path=DetectDuplicatesCommand}">Find Duplicates</Button>
+        <StackPanel Grid.Column="1" Grid.Row="2" Background="#F5F9FE" Orientation="Horizontal" Height="40">
+            <Button Name="AddToLibraryButton"
+                    Margin="5,2,5,2"
+                    Width="38"
+                    Command="{Binding Path=AddToLibraryCommand}"
+                    ToolTip="Add to Library"
+                    Background="{StaticResource AddToLibraryButtonImageBrush}"
+                    Style="{StaticResource MyButtonStyle}"/>
+            <Button Name="RefreshLibraryButton"
+                    Margin="0,2,5,2"
+                    Width="45"
+                    ToolTip="Refresh Library - Add new, remove missing"
+                    Command="{Binding Path=RefreshLibraryCommand}"                    
+                    Background="{StaticResource RefreshLibraryButtonImageBrush}"
+                    Style="{StaticResource MyButtonStyle}"/>
+            <Button Name="ExportListButton"
+                    Margin="0,2,5,2"
+                    Width="39"
+                    ToolTip="Export as csv"
+                    Command="{Binding Path=ExportListCommand}"
+                    Background="{StaticResource ExportListButtonImageBrush}"
+                    Style="{StaticResource MyButtonStyle}"/>
+            <Button Name="DetectDuplicatesButton"
+                    Margin="0,2,5,2"
+                    Width="30"
+                    ToolTip="Find Duplicates"
+                    Command="{Binding Path=DetectDuplicatesCommand}"
+                    Background="{StaticResource FindDuplicatesButtonImageBrush}"
+                    Style="{StaticResource MyButtonStyle}"/>
         </StackPanel>
     </Grid>
 </UserControl>

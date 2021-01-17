@@ -127,4 +127,19 @@
   <data name="Error_ParsedSongExtensionNotFilled" xml:space="preserve">
     <value>Parsed Song extension member is not filled! Parsed Song: {0}</value>
   </data>
+  <data name="database_add33x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\database-add33x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="export_share34x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\export-share34x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="filter_remove18x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\filter-remove18x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="folder_refresh32x25" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\folder-refresh32x25.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="unknown_file25x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\unknown-file25x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

@@ -156,6 +156,21 @@
   <ItemGroup>
     <Resource Include="Resources\SearchButton.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\filter-remove18x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\database-add33x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\export-share34x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\unknown-file25x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\folder-refresh32x25.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetDir)*.*" "$(SolutionDir)Src\bin\Debug\x86\" /Y

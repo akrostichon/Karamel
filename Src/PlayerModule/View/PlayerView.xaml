@@ -6,6 +6,13 @@
              xmlns:userControls="clr-namespace:Karamel.Infrastructure.UserControls;assembly=Karamel.Infrastructure"
              mc:Ignorable="d" 
              d:DesignHeight="45" d:DesignWidth="1024">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Karamel.Infrastructure;component/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.Resources>
             <ImageBrush x:Key="LastSongButtonImageBrush" ImageSource="/PlayerControl;component/Resources/LastSongButton.png" Stretch="UniformToFill"/>
@@ -15,32 +22,6 @@
             <ImageBrush x:Key="SpeakerButtonImageBrush" ImageSource="/PlayerControl;component/Resources/Speaker.png" Stretch="UniformToFill"/>
             <ImageBrush x:Key="StopButtonImageBrush" ImageSource="/PlayerControl;component/Resources/StopButton.png" Stretch="UniformToFill"/>
             <ImageBrush x:Key="HelpButtonImageBrush" ImageSource="/PlayerControl;component/Resources/HelpButton.png" Stretch="None"/>
-            <!-- This style is used for buttons, to remove the WPF default 'animated' mouse over effect -->
-            <Style x:Key="MyButtonStyle" TargetType="Button">
-                <Setter Property="OverridesDefaultStyle" Value="True"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border Name="border" 
-                            BorderThickness="0"
-                            BorderBrush="Black"
-                            Background="{TemplateBinding Background}">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="border" Property="BorderThickness" Value="1" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <Trigger Property="IsEnabled" Value="False">
-                        <Setter Property="Opacity" Value="0.4" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
             <Style x:Key="SliderProgressStyle" TargetType="{x:Type ProgressBar}">
                 <Setter Property="Foreground" Value="#FFB00606"/>
                 <Setter Property="Background" Value="LightGray"/>
@@ -62,7 +43,7 @@
                 </Setter>
             </Style>
         </Grid.Resources>
-        <ToolBarPanel Height="45" VerticalAlignment="Top">
+        <ToolBarPanel Height="45" VerticalAlignment="Top" Background="#F5F9FE">
             <ToolBar Height="45" IsManipulationEnabled="False" AllowDrop="False" ToolBarTray.IsLocked="True" OverflowMode="Never">
                 <Button Style="{StaticResource MyButtonStyle}" Command="{Binding Path=PreviousSongCommand}"
                         Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50"
