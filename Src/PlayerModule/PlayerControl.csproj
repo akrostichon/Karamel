@@ -185,7 +185,7 @@
     <Resource Include="Resources\SongProgress.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\HelpButton.png" />
+    <Resource Include="Resources\HelpButton.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

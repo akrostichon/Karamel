@@ -21,7 +21,7 @@
             <ImageBrush x:Key="PlayButtonImageBrush" ImageSource="/PlayerControl;component/Resources/PlayButton.png" Stretch="UniformToFill"/>
             <ImageBrush x:Key="SpeakerButtonImageBrush" ImageSource="/PlayerControl;component/Resources/Speaker.png" Stretch="UniformToFill"/>
             <ImageBrush x:Key="StopButtonImageBrush" ImageSource="/PlayerControl;component/Resources/StopButton.png" Stretch="UniformToFill"/>
-            <ImageBrush x:Key="HelpButtonImageBrush" ImageSource="/PlayerControl;component/Resources/HelpButton.png" Stretch="None"/>
+            <ImageBrush x:Key="HelpButtonImageBrush" ImageSource="/PlayerControl;component/Resources/HelpButton.png" Stretch="UniformToFill"/>
             <Style x:Key="SliderProgressStyle" TargetType="{x:Type ProgressBar}">
                 <Setter Property="Foreground" Value="#FFB00606"/>
                 <Setter Property="Background" Value="LightGray"/>
@@ -190,7 +190,7 @@
                 <Slider Height="22" HorizontalAlignment="Left" Name="VolumeSlider" VerticalAlignment="Center" Width="150" Margin="5,2,5,2" Value="{Binding Path=Volume}" Maximum="10" Minimum="0"/>
                 <Separator/>
                 <Menu>
-                    <MenuItem Height="40" Width="38" ToolTip="Help" Background="Transparent">
+                    <MenuItem Height="40" Width="38" ToolTip="Help" >
                         <MenuItem.Icon>
                             <Image Source="/PlayerControl;component/Resources/HelpButton.png"/>
                         </MenuItem.Icon>

@@ -67,35 +67,48 @@
             </DataGrid.Columns>
         </DataGrid>
         <Rectangle Fill="Firebrick" Grid.Column="2" Grid.Row="0" Grid.RowSpan="3" Width="10"/>
-        <StackPanel Grid.Column="1" Grid.Row="2" Background="#F5F9FE" Orientation="Horizontal" Height="40">
-            <Button Name="AddToLibraryButton"
-                    Margin="5,2,5,2"
-                    Width="38"
-                    Command="{Binding Path=AddToLibraryCommand}"
-                    ToolTip="Add to Library"
-                    Background="{StaticResource AddToLibraryButtonImageBrush}"
-                    Style="{StaticResource MyButtonStyle}"/>
-            <Button Name="RefreshLibraryButton"
-                    Margin="0,2,5,2"
-                    Width="45"
-                    ToolTip="Refresh Library - Add new, remove missing"
-                    Command="{Binding Path=RefreshLibraryCommand}"                    
-                    Background="{StaticResource RefreshLibraryButtonImageBrush}"
-                    Style="{StaticResource MyButtonStyle}"/>
-            <Button Name="ExportListButton"
-                    Margin="0,2,5,2"
-                    Width="39"
-                    ToolTip="Export as csv"
-                    Command="{Binding Path=ExportListCommand}"
-                    Background="{StaticResource ExportListButtonImageBrush}"
-                    Style="{StaticResource MyButtonStyle}"/>
-            <Button Name="DetectDuplicatesButton"
-                    Margin="0,2,5,2"
-                    Width="30"
-                    ToolTip="Find Duplicates"
-                    Command="{Binding Path=DetectDuplicatesCommand}"
-                    Background="{StaticResource FindDuplicatesButtonImageBrush}"
-                    Style="{StaticResource MyButtonStyle}"/>
-        </StackPanel>
+        <Grid Grid.Column="1" Grid.Row="2" Background="#F5F9FE" Height="40">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" >
+                <Button Name="AddToLibraryButton"
+                        Margin="5,2,5,2"
+                        Width="38"
+                        Command="{Binding Path=AddToLibraryCommand}"
+                        ToolTip="Add to Library"
+                        Background="{StaticResource AddToLibraryButtonImageBrush}"
+                        Style="{StaticResource MyButtonStyle}"/>
+                <Button Name="RefreshLibraryButton"
+                        Margin="0,2,5,2"
+                        Width="45"
+                        ToolTip="Refresh Library - Add new, remove missing"
+                        Command="{Binding Path=RefreshLibraryCommand}"                    
+                        Background="{StaticResource RefreshLibraryButtonImageBrush}"
+                        Style="{StaticResource MyButtonStyle}"/>
+                <Button Name="ExportListButton"
+                        Margin="0,2,5,2"
+                        Width="39"
+                        ToolTip="Export as csv"
+                        Command="{Binding Path=ExportListCommand}"
+                        Background="{StaticResource ExportListButtonImageBrush}"
+                        Style="{StaticResource MyButtonStyle}"/>
+                <Button Name="DetectDuplicatesButton"
+                        Margin="0,2,5,2"
+                        Width="30"
+                        ToolTip="Find Duplicates"
+                        Command="{Binding Path=DetectDuplicatesCommand}"
+                        Background="{StaticResource FindDuplicatesButtonImageBrush}"
+                        Style="{StaticResource MyButtonStyle}"/>
+               
+            </StackPanel>
+            <Rectangle Grid.Row="0"
+                       Grid.Column="1"
+                       Fill="Firebrick"/>
+        </Grid>
     </Grid>
 </UserControl>
