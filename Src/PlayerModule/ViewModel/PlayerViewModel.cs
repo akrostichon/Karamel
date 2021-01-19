@@ -286,12 +286,18 @@ namespace PlayerControl.ViewModel
             string progressOf = currentTime + " | " + totalDuration;
             ((IPlayerView)View).SetSongProgressToggleButton(progressOf, timeTo);
 
-            if (positionInMs > 0 && PlaybackPaused == false && _lastSongPositionTimePair != null)
+            if (_lastSongPositionTimePair == null)
+            {
+                _lastSongPositionTimePair = new Tuple<DateTime, int>(DateTime.Now, positionInMs);
+            }
+
+            if (positionInMs > 0 && PlaybackPaused == false)
             {
                 bool haveToHandleEndOfSong = (positionInMs >= durationOfSongInMs);
 
-                bool fiveHundredMsSinceLastUpdate = _lastSongPositionTimePair != null && (DateTime.Now - _lastSongPositionTimePair.Item1).TotalMilliseconds > 500;
-                if (_lastSongPositionTimePair == null || fiveHundredMsSinceLastUpdate)
+                int lastPositionInMs = _lastSongPositionTimePair.Item2;
+                bool fiveHundredMsSinceLastUpdate = (DateTime.Now - _lastSongPositionTimePair.Item1).TotalMilliseconds > 500;
+                if (fiveHundredMsSinceLastUpdate)
                 {
                     _lastSongPositionTimePair = new Tuple<DateTime, int>(DateTime.Now, positionInMs);
                 }
@@ -300,8 +306,7 @@ namespace PlayerControl.ViewModel
                 // but has already stopped playing
                 if (haveToHandleEndOfSong == false &&
                     fiveHundredMsSinceLastUpdate &&
-                    _lastSongPositionTimePair != null &&
-                    _lastSongPositionTimePair.Item2 == positionInMs
+                    _lastSongPositionTimePair.Item2 == lastPositionInMs
                     )
                 {
                     haveToHandleEndOfSong = true;
@@ -462,13 +467,6 @@ namespace PlayerControl.ViewModel
         /// </summary>
         private void Previous()
         {
-            if (SolutionWideSettings.Instance.RemoveSongFromPlaylistAfterFetch && _mediaPlayer.IsPlaying())
-            {
-                // restart current song
-                Stop();
-                Play();
-                return;
-            }
             if (PlaylistService != null)
             {
                 CurrentSong = PlaylistService.GetPreviousPlaylistItem(CurrentSong);
@@ -488,10 +486,6 @@ namespace PlayerControl.ViewModel
         /// <returns></returns>
         private bool CanPlayPreviousSong()
         {
-            if (SolutionWideSettings.Instance.RemoveSongFromPlaylistAfterFetch && _mediaPlayer.IsPlaying())
-            {
-                return true;
-            }
             if (PlaylistService != null)
             {
                 return PlaylistService.HasPreviousPlaylistItem(CurrentSong);
@@ -585,6 +579,7 @@ namespace PlayerControl.ViewModel
             {
                 Stop();
             }
+
             Next(false);
         }
 

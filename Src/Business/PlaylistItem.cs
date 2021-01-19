@@ -27,7 +27,7 @@ namespace Business
         /// <summary>
         /// Time when the playlist item was added
         /// </summary>
-        private readonly DateTime _addedTime;
+        private DateTime _addedTime;
         /// <summary>
         /// Time passed since the song was added
         /// </summary>
@@ -74,6 +74,11 @@ namespace Business
         }
 
         #endregion Constructor
+
+        public void ResetTimeSinceAdd()
+        {
+            _addedTime = DateTime.Now;
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
@@ -181,7 +186,7 @@ namespace Business
             {
                 timeSinceAddSb.Append("< 1 minute ");
             }
-            timeSinceAddSb.Append("in playlist");
+
             TimePassedSinceAdd = timeSinceAddSb.ToString();
         }
 

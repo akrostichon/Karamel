@@ -206,23 +206,6 @@ namespace Karamel.Infrastructure
             }
         }
 
-
-        /// <summary>
-        /// should a song be removed from the playlist after it has been fetched by the player control
-        /// </summary>
-        public bool RemoveSongFromPlaylistAfterFetch
-        {
-            get
-            {
-                return Settings.Default.RemoveSongFromPlaylistAfterFetch;
-            }
-            set
-            {
-                Settings.Default.RemoveSongFromPlaylistAfterFetch = value;
-                Settings.Default.Save();
-            }
-        }
-
         #endregion Properties
     }
 }

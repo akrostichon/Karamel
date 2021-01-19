@@ -11,6 +11,12 @@ namespace Playlist.ViewModel
         /// </summary>
         ObservableCollection<PlaylistItem> PlaylistItems { get; }
 
+
+        /// <summary>
+        /// list of items witin the playlist history
+        /// </summary>
+        ObservableCollection<PlaylistItem> HistoryPlaylistItems { get; }
+
         /// <summary>
         /// Plays the selected playlistItem
         /// </summary>

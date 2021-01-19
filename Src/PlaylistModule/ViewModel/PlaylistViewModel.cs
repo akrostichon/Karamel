@@ -8,6 +8,7 @@ using Microsoft.Practices.Prism.ViewModel;
 using Karamel.Infrastructure;
 using Microsoft.Practices.Unity;
 using Playlist.View;
+using System;
 
 namespace Playlist.ViewModel
 {
@@ -22,6 +23,11 @@ namespace Playlist.ViewModel
         /// list of items witin the playlist
         /// </summary>
         private readonly ObservableCollection<PlaylistItem> _playlistItems;
+
+        /// <summary>
+        /// list of items witin the playlist history
+        /// </summary>
+        private readonly ObservableCollection<PlaylistItem> _historyItems;
 
         /// <summary>
         /// unity container
@@ -52,6 +58,8 @@ namespace Playlist.ViewModel
             _unityContainer = unityContainer;
 
             _playlistItems = new ObservableCollection<PlaylistItem>();
+            _historyItems = new ObservableCollection<PlaylistItem>();
+
             View = playlistView;
             View.ViewModel = this;
 
@@ -73,6 +81,12 @@ namespace Playlist.ViewModel
         /// List of playlist items (observable)
         /// </summary>
         public ObservableCollection<PlaylistItem> PlaylistItems => _playlistItems;
+
+
+        /// <summary>
+        /// List of historical playlist items (observable)
+        /// </summary>
+        public ObservableCollection<PlaylistItem> HistoryPlaylistItems => _historyItems;
 
         /// <summary>
         /// service for the media library
@@ -192,6 +206,7 @@ namespace Playlist.ViewModel
             {
                 idxOfPlaylistItem = _playlistItems.IndexOf(currentPlaylistItem);
             }
+
             if (fetchFromMediaLibraryIfEndReached)
             {
                 bool lastItemSelected = idxOfPlaylistItem == _playlistItems.Count - 1;
@@ -204,18 +219,26 @@ namespace Playlist.ViewModel
             if (idxOfPlaylistItem < _playlistItems.Count - 1)
             {
                 PlaylistItem nextPlaylistItem = _playlistItems[idxOfPlaylistItem + 1];
-                if (SolutionWideSettings.Instance.RemoveSongFromPlaylistAfterFetch)
-                {
-                    _playlistItems.Remove(nextPlaylistItem);
-                }
-                else
-                {
-                    ((IPlaylistView)View).SelectItem(nextPlaylistItem);
-                }
+                ((IPlaylistView)View).SelectItem(nextPlaylistItem);
+
+                MovePreviousPlaylistItemToHistory(idxOfPlaylistItem);
+
                 return nextPlaylistItem;
             }
 
             return null;
+        }
+
+        private void MovePreviousPlaylistItemToHistory(int idxOfPreviousPlaylistItem)
+        {
+            if (idxOfPreviousPlaylistItem >= 0)
+            {
+                PlaylistItem previousPlaylistItem = _playlistItems[idxOfPreviousPlaylistItem];
+                _playlistItems.RemoveAt(idxOfPreviousPlaylistItem);
+
+                previousPlaylistItem.ResetTimeSinceAdd();
+                _historyItems.Insert(0, previousPlaylistItem);
+            }
         }
 
         /// <summary>
@@ -346,7 +369,6 @@ namespace Playlist.ViewModel
 
         /// <summary>
         /// Plays a playlist item
-        /// Additionall removes it from the playlist if RemoveSongFromPlaylistAfterFetch is true
         /// </summary>
         /// <param name="selectedItem"></param>
         public void PlayItem(PlaylistItem selectedItem)
@@ -355,10 +377,6 @@ namespace Playlist.ViewModel
             if (playerService != null)
             {
                 playerService.Play(selectedItem);
-                if (SolutionWideSettings.Instance.RemoveSongFromPlaylistAfterFetch)
-                {
-                    _playlistItems.Remove(selectedItem);
-                }
             }
         }
 

@@ -1,7 +1,6 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Input;
 using Business;
-using Karamel.Infrastructure;
 using Playlist.ViewModel;
 
 namespace Playlist.View
@@ -52,13 +51,13 @@ namespace Playlist.View
         /// <param name="e"></param>
         private void PlaylistGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            bool removeSongFromPlaylist = SolutionWideSettings.Instance.RemoveSongFromPlaylistAfterFetch;
             DataGridRow row = sender as DataGridRow;
             if (row != null)
             {
                 PlaylistItem playlistItem = row.Item as PlaylistItem;
-                if (playlistItem != null && (row.GetIndex() == 0 || removeSongFromPlaylist == false))
+                if (playlistItem != null)
                 {
+                    // TODO this means a user may play any item in the playlist and we will go on not with the next item but with the first
                     ((IPlaylistViewModel) ViewModel).PlayItem(playlistItem);
                 }
             }

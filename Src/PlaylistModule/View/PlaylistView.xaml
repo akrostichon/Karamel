@@ -46,15 +46,19 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <Rectangle Fill="Firebrick" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Width="10"/>
+        <Rectangle Fill="Firebrick" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Width="10"/>
         <Rectangle Fill="Firebrick" Grid.Column="1" Grid.Row="0" Height="10"/>
-        <DataGrid AutoGenerateColumns="False" Name="PlaylistGrid" Background="Snow" Foreground="Cornsilk"
+        <!-- Playlist grid-->
+        <StackPanel Grid.Column="1" Grid.Row="1">
+            <TextBlock Text="Playlist" Foreground="White" Background="Firebrick" FontWeight="Bold" FontSize="16"></TextBlock>
+            <DataGrid AutoGenerateColumns="False" Name="PlaylistGrid" Background="Snow" Foreground="Cornsilk"
                   ItemsSource="{Binding Path=PlaylistItems}" Style="{DynamicResource DataGridStyle1}"
                   CanUserSortColumns="False" Grid.Column="1" Grid.Row="1" MinHeight="240"
                   dragDrop:DragDrop.IsDragSource="True"
@@ -63,13 +67,34 @@
                   dragDrop:DragDrop.DropHandler="{Binding}"
                   dragDrop:DragDrop.DragDropContext="Media">
 
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Artist"  Binding="{Binding Song.Artist}" Width="*" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Title" Binding="{Binding Song.Title}" Width="*" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Singer" Binding="{Binding GetSingersAsText}" Width="*" Visibility="Hidden"/>
-                <DataGridTextColumn Header="Time since add" Binding="{Binding TimePassedSinceAdd}" Width ="*" IsReadOnly="True"/>
-            </DataGrid.Columns>
-        </DataGrid>
-        <Rectangle Fill="Firebrick" Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" Width="10"/>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Artist"  Binding="{Binding Song.Artist}" Width="*" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Title" Binding="{Binding Song.Title}" Width="*" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Singer" Binding="{Binding GetSingersAsText}" Width="*" Visibility="Hidden"/>
+                    <DataGridTextColumn Header="Time since add" Binding="{Binding TimePassedSinceAdd}" Width ="*" IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+        <!--History grid-->
+        <StackPanel Grid.Column="1" Grid.Row="2">
+            <TextBlock Text="History" Foreground="White" Background="Firebrick" FontWeight="Bold" FontSize="16"></TextBlock>
+            <DataGrid AutoGenerateColumns="False" Name="HistoryGrid" Background="Snow" Foreground="Cornsilk"
+                      ItemsSource="{Binding Path=HistoryPlaylistItems}" Style="{DynamicResource DataGridStyle1}"
+                      CanUserSortColumns="False" MinHeight="240"
+                      dragDrop:DragDrop.IsDragSource="True"
+                      dragDrop:DragDrop.IsDropTarget="False"
+                      dragDrop:DragDrop.UseDefaultDragAdorner="True"
+                      dragDrop:DragDrop.DropHandler="{Binding}"
+                      dragDrop:DragDrop.DragDropContext="Media">
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Artist"  Binding="{Binding Song.Artist}" Width="*" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Title" Binding="{Binding Song.Title}" Width="*" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Singer" Binding="{Binding GetSingersAsText}" Width="*" Visibility="Hidden"/>
+                    <DataGridTextColumn Header="Played" Binding="{Binding TimePassedSinceAdd}" Width ="*" IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+        <Rectangle Fill="Firebrick" Grid.Column="2" Grid.Row="0" Grid.RowSpan="3" Width="10"/>
     </Grid>
 </UserControl>
