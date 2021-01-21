@@ -10,7 +10,6 @@
         <!-- DataGrid style -->
         <Style x:Key="DataGridStyle1" TargetType="{x:Type DataGrid}">
             <Setter Property="ColumnHeaderStyle" Value="{DynamicResource ColumnHeaderStyle1}"/>
-            <Setter Property="CellStyle" Value="{DynamicResource CellStyle1}"/>
             <Setter Property="RowStyle" Value="{DynamicResource RowStyle1}"/>
         </Style>
         <!-- DataGridColumnHeader style -->
@@ -35,11 +34,6 @@
                     </Setter>
                 </DataTrigger>
             </Style.Triggers>
-        </Style>
-        <Style x:Key="CellStyle1" TargetType="DataGridCell">
-            <Setter Property="Height" Value="20"/>
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="FontSize" Value="12" />
         </Style>
     </UserControl.Resources>
     <Grid VerticalAlignment="Stretch" >
